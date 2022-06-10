@@ -10,12 +10,7 @@ const express = require("express");
 const app = express();
 const { port } = require("./config");
 
-// var whitelist = [
-//   "https://react-inotebook-himesh-29.vercel.app",
-//   "https://react-inotebook.vercel.app",
-//   "https://react-inotebook-frontend-bhhcxycft-himesh-29.vercel.app",
-
-// ];
+var whitelist = ["https://react-inotebook.vercel.app"];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -33,7 +28,7 @@ const cors = require("cors");
 app.use(express.json());
 
 //FORCING OUR APPLICATION TO USE CORS SO THAT OUR REACT APPLICATION CAN TALK WITH OUR BACKEND
-app.use(cors());
+app.use(cors(corsOptions));
 
 //VARIOUS ENDPOINTS WE CAN LINK TO, THEY ARE PRESENT IN THE ROUTES FOLDER
 app.use("/api/auth", require("./routes/auth"));
