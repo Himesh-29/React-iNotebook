@@ -10,7 +10,7 @@ const express = require("express");
 const app = express();
 const { port } = require("./config");
 
-var whitelist = [];
+var whitelist = ["https://react-inotebook-himesh-29.vercel.app"];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
