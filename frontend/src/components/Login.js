@@ -14,7 +14,7 @@ export const Login = (props) => {
   //This function will help in logging in, first it will stop the page reloading due to form submission, then we will authenticate the user using our backend and granting access to the logged in user
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const url = `${process.env.BACKEND_URL}/auth/login`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/auth/login`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
