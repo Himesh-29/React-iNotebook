@@ -5,7 +5,7 @@ require("dotenv").config();
 let mongoURI = process.env.MONGO_URL;
 let connectToMongo = () => {
   mongoose.connect(mongoURI, () => {
-    console.log("Connected successfully");
+    console.log("Database connected successfully");
   });
   mongoose.connection.on("error", (err) => {
     console.log(err);
@@ -13,4 +13,3 @@ let connectToMongo = () => {
 };
 
 module.exports = connectToMongo;
-  

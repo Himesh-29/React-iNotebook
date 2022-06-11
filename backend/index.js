@@ -8,9 +8,8 @@ connectToMongo();
 //ADDING THE EXPRESS TO OUR WEBSITE
 const express = require("express");
 const app = express();
-const { port } = require("./config");
 
-var whitelist = ["https://react-inotebook.vercel.app"];
+var whitelist = [];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -35,6 +34,6 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/mynotes"));
 
 //HELPS US TO SEE WHERE OUR APP IS LISTENING TO
-app.listen(port, () => {
-  console.log(`iNotebook backend listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`iNotebook backend listening at http://localhost:${port}`);
+// });

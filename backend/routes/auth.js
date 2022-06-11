@@ -8,8 +8,6 @@ const jwt = require("jsonwebtoken"); //Helps you to ensure secure connection b/w
 
 const User = require("../models/User"); // Importing the basic template of User from the models
 
-const { JWT_SECRET } = require("../config");
-
 const fetchuser = require("../middleware/fetchUserDetails");
 
 // CREATING A NEW USER
@@ -50,7 +48,7 @@ router.post(
       });
 
       //We are signing our web token below to authenticate the user
-      const authToken = jwt.sign({ user: { id: user.id } }, JWT_SECRET);
+      const authToken = jwt.sign({ user: { id: user.id } }, `${process.env.JWT_SECRET}`);
       success = true;
       res.json({ authToken, success }); //Providing a response JSON object with the authentication token generated to the end user.
     } catch (error) {
@@ -91,7 +89,7 @@ router.post(
           .json({ error: "Please log in with correct credentials", success });
       }
       //We are signing our web token below to authenticate the user
-      const authToken = jwt.sign({ user: { id: user.id } }, JWT_SECRET);
+      const authToken = jwt.sign({ user: { id: user.id } }, `${process.env.JWT_SECRET}`);
       success = true;
       res.json({ authToken, success }); //Providing a response JSON object with the authentication token generated to the end user.
     } catch (error) {
