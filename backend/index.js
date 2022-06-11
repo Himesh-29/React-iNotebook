@@ -9,7 +9,7 @@ connectToMongo();
 const express = require("express");
 const app = express();
 
-var whitelist = [];
+var whitelist = ["https://react-inotebook.vercel.app/"];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
