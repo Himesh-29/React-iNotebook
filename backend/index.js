@@ -33,7 +33,7 @@ app.use(cors(corsOptions));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/mynotes"));
 
-//HELPS US TO SEE WHERE OUR APP IS LISTENING TO
-// app.listen(port, () => {
-//   console.log(`iNotebook backend listening at http://localhost:${port}`);
-// });
+// HELPS US TO SEE WHERE OUR APP IS LISTENING TO
+app.listen(port, () => {
+  console.log(`iNotebook backend listening at http://localhost:5000`);
+});
