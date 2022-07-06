@@ -8,6 +8,7 @@ connectToMongo();
 //ADDING THE EXPRESS TO OUR WEBSITE
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 //FORCING OUR APPLICATION TO USE JSON INSTEAD OF STRING ON THE SCREEN
 app.use(express.json());
