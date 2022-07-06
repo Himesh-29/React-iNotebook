@@ -8,13 +8,9 @@ connectToMongo();
 //ADDING THE EXPRESS TO OUR WEBSITE
 const express = require("express");
 const app = express();
-const cors = require("cors");
 
 //FORCING OUR APPLICATION TO USE JSON INSTEAD OF STRING ON THE SCREEN
 app.use(express.json());
-
-//FORCING OUR APPLICATION TO USE CORS SO THAT OUR REACT APPLICATION CAN TALK WITH OUR BACKEND
-app.use(cors());
 
 //VARIOUS ENDPOINTS WE CAN LINK TO, THEY ARE PRESENT IN THE ROUTES FOLDER
 app.use("/api/auth", require("./routes/auth"));
