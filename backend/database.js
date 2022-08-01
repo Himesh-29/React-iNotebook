@@ -4,9 +4,13 @@ require("dotenv").config();
 
 let mongoURI = process.env.MONGO_URL;
 let connectToMongo = () => {
-  mongoose.connect(mongoURI, () => {
-    console.log("Database connected successfully");
-  });
+  mongoose.connect(
+    mongoURI,
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+    () => {
+      console.log("Database connected successfully");
+    }
+  );
   mongoose.connection.on("error", (err) => {
     console.log(err);
   });
