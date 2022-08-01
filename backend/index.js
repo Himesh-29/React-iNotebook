@@ -49,7 +49,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/mynotes"));
 
 // HELPS US TO SEE WHERE OUR APP IS LISTENING TO
-let port = process.env.PORT;
+let port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`iNotebook backend listening at http://localhost:${port}`);
 });

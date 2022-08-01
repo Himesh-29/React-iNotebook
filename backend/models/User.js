@@ -19,10 +19,10 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
 const User = mongoose.model("user", userSchema); //creating a object/template of the schema we decided above
-User.createIndexes(); // Used to not duplicate our database with same user email
+// User.createIndexes(); // Used to not duplicate our database with same user email
 module.exports = User; //Exporting this basic template
