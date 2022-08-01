@@ -27,7 +27,7 @@ sudo apt-get install -y mongodb-org
 
 ```cmd
 git clone https://github.com/Himesh-29/React-iNotebook.git
-cd React-iNoteBook
+cd React-iNotebook
 npm --prefix ./backend install
 npm --prefix ./frontend install
 npm install
@@ -42,7 +42,7 @@ First stop server by ctrl+C.
 ```cmd
 sudo service mongod stop
 cd ..
-rm -rf React-iNoteBook
+rm -rf React-iNotebook
 ```
 
 ### Linux - Arch
@@ -82,7 +82,7 @@ First stop server by ctrl+C.
 ```cmd
 systemctl stop mongodb
 cd ..
-rm -rf React-iNoteBook
+rm -rf React-iNotebook
 ```
 
 ### Windows
@@ -112,7 +112,7 @@ First stop server by ctrl+C.
 
 ```cmd
 cd ..
-rmdir /S React-iNoteBook
+rmdir /S React-iNotebook
 ```
 
 ## Note
