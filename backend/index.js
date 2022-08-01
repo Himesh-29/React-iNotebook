@@ -9,32 +9,32 @@ connectToMongo();
 const express = require("express");
 const app = express();
 
-var whitelist = ["https://react-inotebook.vercel.app"];
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Something went wrong"));
-    }
-  },
-};
+// var whitelist = ["https://react-inotebook.vercel.app"];
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Something went wrong"));
+//     }
+//   },
+// };
 
-//ADDING CORS TO OUR WEBSITE
-const cors = require("cors");
+// //ADDING CORS TO OUR WEBSITE
+// const cors = require("cors");
 
-//FORCING OUR APPLICATION TO USE JSON INSTEAD OF STRING ON THE SCREEN
-app.use(express.json());
+// //FORCING OUR APPLICATION TO USE JSON INSTEAD OF STRING ON THE SCREEN
+// app.use(express.json());
 
 //FORCING OUR APPLICATION TO USE CORS SO THAT OUR REACT APPLICATION CAN TALK WITH OUR BACKEND
-app.use(cors(corsOptions));
+app.use(cors());
 
 //VARIOUS ENDPOINTS WE CAN LINK TO, THEY ARE PRESENT IN THE ROUTES FOLDER
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/mynotes"));
 
 // HELPS US TO SEE WHERE OUR APP IS LISTENING TO
-let port=5000;
+let port = 5000;
 app.listen(port, () => {
   console.log(`iNotebook backend listening at http://localhost:5000`);
 });

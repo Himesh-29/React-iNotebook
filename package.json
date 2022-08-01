@@ -1,0 +1,23 @@
+{
+  "name": "inotebook",
+  "version": "1.0.0",
+  "description": "It is a full-stack MERN application which saves your personal notes on the mongoDB atlas through React frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "both": "concurrently \"npm --prefix ./frontend start\" \"nodemon ./backend/index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Himesh-29/React-iNotebook.git"
+  },
+  "author": "Himesh Maniyar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Himesh-29/React-iNotebook/issues"
+  },
+  "homepage": "https://github.com/Himesh-29/React-iNotebook#readme",
+  "dependencies": {
+    "concurrently": "^7.0.0"
+  }
+}
