@@ -3,7 +3,7 @@
 const express = require("express");
 const router = express.Router(); // We need to use router to link our route present here in the index.js
 const { body, validationResult } = require("express-validator"); // We are using express-validator here to validate our fields easily
-const bcrypt = require("bcryptjs"); //Used to hash passwords of the user
+let CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken"); //Helps you to ensure secure connection b/w client and server
 
 const User = require("../models/User"); // Importing the basic template of User from the models
@@ -38,12 +38,13 @@ router.post(
         }); //Return a response of status code 400 and JSON contain the error message as 'Sorry a user with this email already exist!'
       }
 
-      const salt = await bcrypt.genSalt(10); //Creating a salt using bcrypt to add extra layer of security to our password
-
       user = await User.create({
         // Creating a User in the db with the values from request.body
         name: req.body.name,
-        password: await bcrypt.hash(req.body.password, salt), //Hashing our password with the salt we created above
+        password: CryptoJS.AES.encrypt(
+          JSON.stringify(req.body.password),
+          process.env.SECRETKEY
+        ).toString(),
         email: req.body.email,
       });
 
@@ -85,8 +86,11 @@ router.post(
           .status(400)
           .json({ error: "Please log in with correct credentials", success });
       }
-      const passwordMatch = await bcrypt.compare(password, user.password); // To compare between password entered by the user and the password from the user, which was looked upon in the database.
-      if (!passwordMatch) {
+      let encryptedPassword = CryptoJS.AES.decrypt(
+          user.password,
+          process.env.SECRETKEY
+        ).toString(CryptoJS.enc.Utf8);
+      if (encryptedPassword!==password) {
         return res
           .status(400)
           .json({ error: "Please log in with correct credentials", success });
