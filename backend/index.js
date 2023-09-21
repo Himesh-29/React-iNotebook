@@ -14,7 +14,7 @@ const app = express();
 
 const rateLimit = require("express-rate-limit");
 
-var whitelist = ["https://react-inotebook.vercel.app"];
+var whitelist = [process.env.FRONTEND_URL];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
