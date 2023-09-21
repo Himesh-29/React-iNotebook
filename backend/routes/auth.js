@@ -87,10 +87,10 @@ router.post(
           .json({ error: "Please log in with correct credentials", success });
       }
       let encryptedPassword = CryptoJS.AES.decrypt(
-          user.password,
-          process.env.SECRETKEY
-        ).toString(CryptoJS.enc.Utf8);
-      if (encryptedPassword!==password) {
+        user.password,
+        process.env.SECRETKEY
+      ).toString(CryptoJS.enc.Utf8);
+      if (encryptedPassword !== '"' + password + '"') {
         return res
           .status(400)
           .json({ error: "Please log in with correct credentials", success });
