@@ -5,7 +5,7 @@ export const Navbar = () => {
   let history = useHistory();
 
   const logout = () => {
-    localStorage.removeItem("authtoken");
+    localStorage.removeItem("authToken");
     history.push("/login");
   };
 
@@ -52,7 +52,7 @@ export const Navbar = () => {
             </li>
           </ul>
 
-          {!localStorage.getItem("authtoken") ? (
+          {!localStorage.getItem("authToken") ? (
             <>
               <Link
                 className="btn btn-outline-primary mx-2"

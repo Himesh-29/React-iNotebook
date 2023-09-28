@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export const Signup = (props) => {
   let history = useHistory();
@@ -19,7 +20,7 @@ export const Signup = (props) => {
   //This function will help in signing up, first it will stop the page reloading due to form submission, then we will authenticate the user using our backend and create a new user
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const url = `${process.env.REACT_APP_BACKEND_URL}/auth/createnewuser`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/auth/signup`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -32,18 +33,63 @@ export const Signup = (props) => {
       }),
     });
     const json = await response.json();
-    if (json.success) {
+    if (response.status === 200) {
       //If json.success===true, then grant access or in the other case show an alert dialogue box
-      localStorage.setItem("authtoken", json.authToken); //Saving the authentication token in local storage
-      history.push("/"); //Redirecting to '/' route
-      props.showAlert("Account created successfully", "success");
+      localStorage.setItem("authToken", json.authToken); //Saving the authentication token in local storage
+      toast.success("Account created successfully", {
+        position: "top-left",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setTimeout(() => {
+        history.push("/"); //Redirecting to '/' route
+      }, 2000);
     } else {
-      props.showAlert("Invalid credentials", "danger");
+      if ("error" in json) {
+        toast.error(json.error, {
+          position: "top-left",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        Array.from(json.errors).forEach(function (err) {
+          toast.error(err.msg, {
+            position: "top-left",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        });
+      }
     }
   };
 
   return (
     <div>
+      <ToastContainer
+        position="top-left"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+        theme="light"
+      />
       <h2 className="mb-4">Signup</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

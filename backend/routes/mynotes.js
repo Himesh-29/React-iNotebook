@@ -9,18 +9,18 @@ const fetchuser = require("../middleware/fetchUserDetails");
 // GETTING All NOTES OF LOGGED IN USER
 // GET REQUEST
 router.get(
-  "/fetchallnotes", // Absolute URL: http://localhost:5000/api/notes/fetchallnotes
+  "/all", // Absolute URL: http://localhost:5000/api/notes/all
   fetchuser,
-  async (req, response) => {
-    const notes = await Notes.find({ user: req.user.id });
-    response.json(notes);
+  async (req, res) => {
+    const notes = await Notes.find({ user: req.userId });
+    return res.status(200).json({ notes });
   }
 );
 
 // CREATING A NOTE FOR LOGGED IN USER
 // POST REQUEST
 router.post(
-  "/createnote", // Absolute URL: http://localhost:5000/api/notes/createnote
+  "/create", // Absolute URL: http://localhost:5000/api/notes/create
   fetchuser,
   [
     body("title", "Enter a valid title").isLength({ min: 5 }), // For field 'title', we are given constraints of having minimum length of 5, and display error message 'Enter a valid title' when it is not fulfilled
@@ -38,17 +38,19 @@ router.post(
     }
     try {
       // Creating a note with the fields entered
-      const notes = await new Notes({
+      const note = Notes({
         title,
         description,
         tag,
-        user: req.user.id, //Here we are getting the ID due to the fetchUserDetail function which returns user from the data after validating the auth token
+        user: req.userId, //Here we are getting the ID due to the fetchUserDetail function which returns user from the data after validating the auth token
       });
-      const savedNote = await notes.save(); //Saving the note
-      res.json(savedNote); // Returning the saved note in the form of json as a response to the post request
+      const savedNote = await note.save(); //Saving the note
+      return res.status(200).json({ note: savedNote }); // Returning the saved note in the form of json as a response to the post request
     } catch (error) {
       console.log(error.message);
-      res.status(500).send("Some error occurred! Try again later");
+      return res.status(500).json({
+        error: "Some error occurred! Try again later",
+      });
     }
   }
 );
@@ -56,7 +58,7 @@ router.post(
 // UPDATING A NOTE FOR LOGGED IN USER
 // PUT REQUEST
 router.put(
-  "/updatenote/:id", // Absolute URL: http://localhost:5000/api/notes/updatenote
+  "/update/:id", // Absolute URL: http://localhost:5000/api/notes/update
   fetchuser,
   [
     body("title", "Enter a valid title").isLength({ min: 5 }), // For field 'title', we are given constraints of having minimum length of 5, and display error message 'Enter a valid title' when it is not fulfilled
@@ -74,23 +76,18 @@ router.put(
     }
     try {
       const newNote = {};
-      if (title) {
-        newNote.title = title;
-      }
-      if (description) {
-        newNote.description = description;
-      }
-      if (tag) {
-        newNote.tag = tag;
-      }
+
+      if (title) newNote.title = title;
+      if (description) newNote.description = description;
+      if (tag) newNote.tag = tag;
 
       //Find the note to be updated using the note ID
       let note = await Notes.findById(req.params.id);
       if (!note) {
-        return res.status(404).send("Note doesn't exist!");
+        return res.status(404).json({ error: "Note doesn't exist!" });
       }
-      if (note.user.toString() !== req.user.id) {
-        return res.status(401).send("Access denied");
+      if (note.user.toString() !== req.userId) {
+        return res.status(401).json({ error: "Access denied" });
       }
       //Finding the note with id and updating it.
       note = await Notes.findByIdAndUpdate(
@@ -98,10 +95,12 @@ router.put(
         { $set: newNote },
         { new: true } //Here new:true means that if new content comes in the request, it will get added.
       );
-      res.json(note); // Returning the updated note in the form of json as a response to the put request
+      return res.status(200).json({ note }); // Returning the updated note in the form of json as a response to the put request
     } catch (error) {
       console.log(error.message);
-      res.status(500).send("Some error occurred! Try again later");
+      return res.status(500).json({
+        error: "Some error occurred! Try again later",
+      });
     }
   }
 );
@@ -109,26 +108,28 @@ router.put(
 // UPDATING A NOTE FOR LOGGED IN USER
 // DELETE REQUEST
 router.delete(
-  "/deletenote/:id", // Absolute URL: http://localhost:5000/api/notes/deletenote
+  "/delete/:id", // Absolute URL: http://localhost:5000/api/notes/delete
   fetchuser,
   async (req, res) => {
     try {
       //Find the note to be updated using the note ID
       let note = await Notes.findById(req.params.id);
       if (!note) {
-        return res.status(404).send("Note doesn't exist!");
+        return res.status(404).json({ error: "Note doesn't exist!" });
       }
-      if (note.user.toString() !== req.user.id) {
-        return res.status(401).send("Access denied");
+      if (note.user.toString() !== req.userId) {
+        return res.status(401).json({ error: "Access denied" });
       }
 
       //Finding the note with id and updating it.
       note = await Notes.findByIdAndDelete(req.params.id);
 
-      res.send("Success, note has been deleted"); // Returning a success message string that note has been deleted as a response to the delete request
+      return res.status(200).json({ info: "Success, note has been deleted" }); // Returning a success message string that note has been deleted as a response to the delete request
     } catch (error) {
       console.log(error.message);
-      res.status(500).send("Some error occurred! Try again later");
+      return res.status(500).json({
+        error: "Some error occurred! Try again later",
+      });
     }
   }
 );

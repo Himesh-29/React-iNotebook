@@ -1,9 +1,9 @@
 import { Notes } from "../components/Notes/Notes";
 
-export const Home = (props) => {
+export const Home = () => {
   return (
     <div>
-      <Notes showAlert={props.showAlert}/>
+      <Notes/>
     </div>
   );
 };

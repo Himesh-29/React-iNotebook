@@ -1,23 +1,60 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
 import noteContext from "../../context/Notes/noteContext";
 import { NoteItem } from "./NoteItem";
 import { AddNote } from "./AddNote";
 import { useHistory } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 
 export const Notes = (props) => {
-  const { notes, getAllNotes, editNote } = useContext(noteContext); //Getting all notes, getAllNotes func, and editNote func from noteContext
+  const { notes, getAllNotes, editNote, errors } = useContext(noteContext); //Getting all notes, getAllNotes func, and editNote func from noteContext
 
   let history = useHistory();
 
   useEffect(() => {
-    // Forcing to run this on loading this component
-    if (localStorage.getItem("authtoken")) {
-      getAllNotes();
-    } else {
-      history.push("/login");
+    const fetchData = async () => {
+      if (localStorage.getItem("authToken")) {
+        try {
+          await getAllNotes();
+        } catch (error) {
+          toast.error(error, {
+            position: "top-left",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      } else {
+        history.push("/login");
+      }
+    };
+    fetchData(); // Fetch data on component mount
+  }, [getAllNotes]);
+
+  useEffect(() => {
+    while (errors.length > 0) {
+      const { error, status } = errors.shift(); // Assuming you want to handle the first error
+      toast.error(error, {
+        position: "top-left",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      if (status === 401 && history.location.pathname !== "/login") {
+        setTimeout(() => {
+          localStorage.removeItem("authToken");
+          history.push("/login");
+        }, 1500);
+      }
     }
-    // eslint-disable-next-line
-  }, []);
+  }, [errors, history]);
 
   const ref = useRef(null); //Using useRef to refer to the showing modal component and closing it
   const refClose = useRef(null); //Using useRef to refer to the close modal button component
@@ -42,10 +79,45 @@ export const Notes = (props) => {
   };
 
   //To finally call the editNote function present in noteState and then update the entry in the database
-  const handleClick = () => {
-    editNote(note.id, note.etitle, note.edescription, note.etag);
+  const handleClick = async () => {
+    let success = await editNote(
+      note.id,
+      note.etitle,
+      note.edescription,
+      note.etag
+    );
     refClose.current.click(); // To close the modal
-    props.showAlert("Updated successfully", "success");
+    while (errors.length > 0) {
+      const { error, status } = errors.shift();
+      toast.error(error, {
+        position: "top-left",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      if (status === 401 && history.location.pathname !== "/login") {
+        setTimeout(() => {
+          localStorage.removeItem("authToken");
+          history.push("/login");
+        }, 1500);
+      }
+    }
+    if (success) {
+      toast.success("Updated successfully", {
+        position: "top-left",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   //Using this onChange to change and read the value from the input fields
@@ -55,7 +127,17 @@ export const Notes = (props) => {
 
   return (
     <>
-      <AddNote showAlert={props.showAlert} />
+      <ToastContainer
+        position="top-left"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+        theme="light"
+      />
+      <AddNote />
 
       <button
         ref={ref}
@@ -169,7 +251,6 @@ export const Notes = (props) => {
                     usernote={note}
                     updateNote={updateNote}
                     key={note._id}
-                    showAlert={props.showAlert}
                   />
                 );
               })}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export const Login = (props) => {
   let history = useHistory(); //Using history to help us in redirecting
@@ -26,17 +27,62 @@ export const Login = (props) => {
       }),
     });
     const json = await response.json();
-    if (json.success) {
+    if (response.status === 200) {
       //If json.success===true, then grant access or in the other case show an alert dialogue box
-      localStorage.setItem("authtoken", json.authToken); //Saving the authentication token in local storage
-      props.showAlert("Logged in successfully", "success");
-      history.push("/"); //Redirecting to '/' route
+      localStorage.setItem("authToken", json.authToken); //Saving the authentication token in local storage
+      toast.success("Account logged in successfully", {
+        position: "top-left",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      setTimeout(() => {
+        history.push("/"); //Redirecting to '/' route
+      }, 2000);
     } else {
-      props.showAlert("Invalid credentials", "danger");
+      if ("error" in json) {
+        toast.error(json.error, {
+          position: "top-left",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        Array.from(json.errors).forEach(function (err) {
+          toast.error(err.msg, {
+            position: "top-left",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        });
+      }
     }
   };
   return (
     <div>
+      <ToastContainer
+        position="top-left"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+        theme="light"
+      />
       <h2 className="mb-4">Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
